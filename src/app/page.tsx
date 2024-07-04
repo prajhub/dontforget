@@ -1,10 +1,10 @@
 import { db } from "@/db";
-import { postsTable, usersTable } from "@/db/schema";
-import Image from "next/image";
+import { usersTable } from "@/db/schema";
+
 
 export default async function Home() {
 
-  const post = await db.query.postsTable.findMany()
+  //const post = await db.query.postsTable.findMany()
 
   return (
     <div>hi
@@ -12,23 +12,18 @@ export default async function Home() {
 
       <form action={async () => {
         'use server'
-        await db.insert(usersTable).values({
-          id: 1,
-          age: 21,
-          email: "text@example.com",
-          name: "syco"
-        })
+        //await db.insert(usersTable).values({
+          //id: "2",
+         // age: 21,
+         // email: "text@example.com",
+         // name: "syco"
+       // })
 
-        await db.insert(postsTable).values({
-          title: "Was gang",
-          content: "yolo",
-          userId: 1
-        })
+       
       }}><button>submit</button></form>
 
-      {post.map(post => (
-        <div>{post.title}</div>
-      ))}
+
+     
     </div>
   );
 }
