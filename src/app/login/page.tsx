@@ -1,9 +1,11 @@
 "use client"
 import z from "zod"
-import { login } from "./actions";
-import {FieldValues, useForm} from "react-hook-form"
+
+import { loginUser } from "./actions";
+import { useAction } from "next-safe-action/hooks";
+import {useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
-import { logInSchema } from "@/lib/types";
+import { logInSchema } from "./validation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,13 +21,20 @@ import {
 export default  function Page() {
 
 	const form = useForm<z.infer<typeof logInSchema>>({
-		resolver: zodResolver(logInSchema)	
+		resolver: zodResolver(logInSchema),
+    defaultValues: {
+      username: "",
+      password: ""
+    }
 	})
+
+  const { execute, result} = useAction(loginUser)
 	
+
 
 	const onSubmit = async (data: { username: string; password: string }) => {
 		
-		console.log(data.username, data.password)
+		execute(data)
 	  };
 	  
 	return (
@@ -41,7 +50,7 @@ export default  function Page() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="username" {...field} />
+                <Input type="username" placeholder="username" {...field} />
               </FormControl>
               {form.formState.errors.username && (<FormMessage>{form.formState.errors.username.message}</FormMessage>)}
               
@@ -59,7 +68,7 @@ export default  function Page() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="password" {...field} />
+                <Input type="password" placeholder="password" {...field} />
               </FormControl>
               
               {form.formState.errors.password && (<FormMessage>{form.formState.errors.password.message}</FormMessage>)}
@@ -72,6 +81,8 @@ export default  function Page() {
         <Button type="submit">Submit</Button>
       </form>
     </Form>
+
+    {result.data?.message ? <p>{result.data.message}</p> : <p>none</p>}
 		</div>
 			
 		</>
